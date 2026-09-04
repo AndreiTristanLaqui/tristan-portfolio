@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowDownRight,
   ArrowUpRight,
+  CircleHalfTilt,
   GithubLogo,
   LinkedinLogo,
   PaperPlaneTilt,
@@ -50,9 +51,34 @@ const skillGroups = [
   },
 ];
 
+const marqueeTerms = [
+  "Accessible Experiences",
+  "Clear Systems",
+  "Type-Safe Interfaces",
+  "Resilient APIs",
+  "Scalable Architecture",
+  "Clean Code",
+  "Performance-Focused",
+  "User-Centered Design",
+  "Maintainable Systems",
+  "Thoughtful UX",
+];
+
 function App() {
   const root = useRef<HTMLElement>(null);
   const [openSkill, setOpenSkill] = useState(0);
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const savedTheme = window.localStorage.getItem("portfolio-theme");
+    if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    window.localStorage.setItem("portfolio-theme", theme);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#202722" : "#F5F1E8");
+  }, [theme]);
 
   useGSAP(
     () => {
@@ -148,9 +174,21 @@ function App() {
           <a href="#capabilities">Capabilities</a>
           <a href="#contact">Contact</a>
         </div>
-        <a className="nav-action" href="#work">
-          View selected work <ArrowDownRight weight="bold" />
-        </a>
+        <div className="nav-controls">
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+            aria-pressed={theme === "dark"}
+            onClick={() => setTheme((current) => current === "light" ? "dark" : "light")}
+          >
+            <CircleHalfTilt weight="fill" aria-hidden="true" />
+            <span>{theme === "light" ? "Dark" : "Light"} mode</span>
+          </button>
+          <a className="nav-action" href="#work">
+            View selected work <ArrowDownRight weight="bold" />
+          </a>
+        </div>
       </nav>
 
       <section className="hero" aria-labelledby="hero-title">
@@ -167,7 +205,7 @@ function App() {
             <p className="hero-reveal">I’m Tristan, a software engineer turning complex requirements into resilient products that people understand on the first try.</p>
             <div className="hero-actions hero-reveal">
               <a className="button button-light" href="#work">Explore my work <ArrowDownRight /></a>
-              <a className="text-link" href="#contact">Start a conversation <ArrowUpRight /></a>
+              <a className="text-link" href="mailto:andreitristanlaqui@gmail.com?subject=Portfolio%20inquiry">Start a conversation <ArrowUpRight /></a>
             </div>
           </div>
           <div className="hero-visual" aria-label="Abstract architectural composition representing systems thinking">
@@ -180,8 +218,12 @@ function App() {
 
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
-          {["TYPE-SAFE INTERFACES", "RESILIENT APIS", "ACCESSIBLE EXPERIENCES", "CLEAR SYSTEMS", "TYPE-SAFE INTERFACES", "RESILIENT APIS", "ACCESSIBLE EXPERIENCES", "CLEAR SYSTEMS"].map((item, index) => (
-            <span key={`${item}-${index}`}>{item}<i /></span>
+          {[0, 1].map((group) => (
+            <div className="marquee-group" key={group}>
+              {marqueeTerms.map((item) => (
+                <span key={`${group}-${item}`}>{item}<i /></span>
+              ))}
+            </div>
           ))}
         </div>
       </div>
@@ -290,14 +332,14 @@ function App() {
         <div className="footer-lead">
           <p>Have a system worth making better?</p>
           <h2>Let’s build something<br /><em>that lasts.</em></h2>
-          <a className="button button-dark" href="mailto:tristan.dev@example.com">Start a conversation <PaperPlaneTilt weight="fill" /></a>
+          <a className="button button-dark" href="mailto:andreitristanlaqui@gmail.com?subject=Portfolio%20inquiry">Start a conversation <PaperPlaneTilt weight="fill" /></a>
         </div>
         <div className="footer-bottom">
           <a className="wordmark footer-mark" href="#top">TR<span>/</span>STAN</a>
           <p>Software engineering with consequence and character.</p>
           <div className="social-links">
-            <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubLogo /></a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedinLogo /></a>
+            <a href="https://github.com/AndreiTristanLaqui" target="_blank" rel="noreferrer" aria-label="GitHub"><GithubLogo /></a>
+            <a href="https://www.linkedin.com/in/andrei-tristan-laqui-06510a38b/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedinLogo /></a>
           </div>
         </div>
       </footer>

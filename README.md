@@ -13,4 +13,4 @@ Run `pnpm build` for a production build and `pnpm typecheck` for a standalone Ty
 
 ## Before publishing
 
-Replace the temporary contact address and generic GitHub/LinkedIn destinations in `src/App.tsx`, add Tristan's current resume PDF, and replace project imagery with real screenshots or short product captures.
+Add Tristan's current resume PDF and replace project imagery with real screenshots or short product captures.
